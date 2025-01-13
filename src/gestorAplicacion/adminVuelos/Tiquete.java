@@ -142,3 +142,20 @@ public class Tiquete implements Serializable {
 	public Silla getSilla() {
 		return silla;
 	}
+	public void setSilla(Silla silla) {
+		this.silla = silla;
+		silla.setEstado(false); //CAMBIA EL ESTADO DE LA SILLA A OCUPADO
+	}
+	public Pasajero getPasajero() {
+		return pasajero;
+	}
+	public void setPasajero(Pasajero pasajero) {
+		this.pasajero = pasajero;
+	}
+	public Alojamiento getAlojamiento() {
+		return alojamiento;
+	}
+	public void setAlojamiento(Alojamiento alojamiento) {
+		this.alojamiento = alojamiento;
+	}
+}
