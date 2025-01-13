@@ -115,4 +115,10 @@ public class Vuelo implements Serializable{
 	public void setHora_de_salida(String hora_de_salida) {
 		this.hora_de_salida = hora_de_salida;
 	}
+	public boolean isEstaCompleto() {
+		return estaCompleto;
+	}
+	public void setEstaCompleto(boolean estaCompleto) {
+		this.estaCompleto = estaCompleto;
+	}
 }
