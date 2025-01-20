@@ -160,3 +160,39 @@ public abstract class Aeronave implements Serializable{
 			aeronave.getSILLASECONOMICAS()[numPosicion] = new Silla(Clase.ECONOMICA, numPosicion, ubicacion);
 		}
 		}
+	}
+	/* METODO ABSTRACTO: ESTE METODO RECIBE UN TIPO DE DATO DOUBLE DE LA DISTANCIA QUE HAY DESDE EL LUGAR DE ORIGEN AL
+	LUGAR DE DESTINO Y RETONARNA EL COSTO TOTAL EN PESOS DE LA GASOLINA UTILIZADA PARA RECORRER EL TRAYECTO. */
+	public abstract double calcularPrecioConsumoGasolina(double distancia_en_km);
+
+	// GET AND SET.
+	public Aerolinea getAerolinea() {
+		return aerolinea;
+	}
+	public void setAerolinea(Aerolinea aerolinea) {
+		this.aerolinea = aerolinea;
+	}
+	public Silla[] getSILLASECONOMICAS() {
+		return SILLAS_ECONOMICAS;
+	}
+	public void setSILLASECONOMICAS(Silla[] sILLAS_ECONOMICAS) {
+		SILLAS_ECONOMICAS = sILLAS_ECONOMICAS;
+	}
+	public Silla[] getSILLASEJECUTIVAS() {
+		return SILLAS_EJECUTIVAS;
+	}
+	public void setSILLASEJECUTIVAS(Silla[] sILLAS_EJECUTIVAS) {
+		SILLAS_EJECUTIVAS = sILLAS_EJECUTIVAS;
+	}
+	public int getGastoGasolina() {
+		return PRECIO_GASTO_GASOLINA;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+
+}
