@@ -207,3 +207,152 @@ public class Admin {
 
 				System.out.println("Perfecto! el alojamiento " + alojamiento_solicitado.getNombre()
 						+ " se ha agregado correctamente a su tiquete de compra.");
+						System.out.println();
+						System.out.println(tiquete_solicitado);
+					}
+				}
+			}
+		
+			/* CASE 4 MAIN: MODIFICAR TIQUETE COMPRADO
+			NOS PERMITE MODIFICAR EL ALOJAMIENTO Y LA SILLA DE UN TIQUETE
+			PRIMERO SOLICITANDO UN ID DE TIQUETE Y VERIFICAR QUE SI EXISTE,
+			LUEGO CON UN SWITCH LE PRESENTADOS LAS 2 OPCIONES MODIFICAR ALOJAMIENTO O MODIFICAR SILLA
+			Y SEGUN LO QUE ESCOJA EJECUTAREMOS EL METODO modificarAlojamiento o modificarSilla. */
+			static void modificarTiquete() {
+				System.out.println("Ingrese el ID del tiquete que desea modificar.");
+				int ID = sc.nextInt();
+				Tiquete tiquete = Aerolinea.BuscarTiquete(ID);
+				if (tiquete == null) {
+					System.out.println("El ID ingresado no se encuentra\n");
+				} else {
+					System.out.println("Que aspectos de su tiquete desea modificar?");
+					System.out.println("1: Modificar alojamiento");
+					System.out.println("2: Modificar Silla");
+		
+					int opcion = sc.nextInt();
+		
+					switch (opcion) {
+		
+						case 1:
+							int dias = modificarAlojamiento(tiquete);
+							if (dias > 0) {
+								tiquete.asignarPrecio(dias);
+								System.out.println(tiquete);
+							}
+							break;
+						case 2:
+							modificarSilla(tiquete);
+					}
+				}
+			}
+		
+			/* METODOS DE MODIFICAR TIQUETE
+		
+			ESTE METODO RECIBE UN TIQUETE AL CUAL SE LE VA A MODIFICAR EL ATRIBUTO SILLA:
+			LO HACE CAMBIANDO EL ATRIBUTO estaDisponible DE SU SILLA ACTUAL A true Y
+			ASIGNANDO OTRA SILLA HACIENDO USO DEL METODO elegirSilla: */
+			private static void modificarSilla(Tiquete tiquete) {
+		
+				System.out.println("A que tipo de silla desea cambiar?");
+				Silla silla = elegirSilla(tiquete.getVuelo());
+				if (silla == null) {
+					System.out.println("Lo sentimos no se encuentran sillas disponibles con esas caracteristicas\n");
+					return;
+				}
+				tiquete.getSilla().setEstado(true);
+				tiquete.setSilla(silla);
+		
+				System.out.println("#####################################");
+				System.out.println("SU SILLA HA SIDO MODIFICADA CON EXITO");
+				System.out.println("#####################################\n");
+				tiquete.asignarPrecio();
+				System.out.println(tiquete);
+		
+			}
+		
+			/* ESTE METODO RECIBE UN TIQUETE AL CUAL SE LE VA A MODIFICAR EL ATRIBUTO ALOJAMIENTO (DEBE DE TENER UNO YA ASIGANDO
+			EN CASO CONTRARIO NO LE PERMITITRA CONTINUAR Y LO REGRESARA AL MENU DE ADMINISTRADOR )
+			SI SI POSEE UN ALOJAMIENTO, EXTRAERA EL DESTINO DEL VUELO DEL TIQUETE E IMPRIMIRA UNA TABLA CON LOS ALOJAMIENTOS
+			QUE POSEEN UNA LOCACION IGUAL A ESTE, LUEGO RECIBE EL NOMBRE DEL ALOJAMIENTO QUE DESEE Y BUSCARA UN ALOJAMIENTO
+			POR ESE NOMBRE Y EN ESA LOCACION EN CASO DE ENCONTRARLO SE LO ASIGNARA AL ATRIBUTO alojamiento DEL TIQUETE. */
+			private static int modificarAlojamiento(Tiquete tiquete_solicitado) {
+				if (tiquete_solicitado.getAlojamiento() == null) {
+					System.out.println("Aun no tiene un alojamiento asociado a su tiquete, puede agregar uno en la opcion 3.");
+					System.out.println();
+					return 0;
+				}
+				String destino = tiquete_solicitado.getVuelo().getDestino();
+				mostrarAlojamientosPorUbicacion(destino);
+				System.out.println("Por favor ingresa el nombre del alojamiento al que desea cambiar");
+				String alojamiento = sc.next();
+				Alojamiento alojamiento_solicitado = Alojamiento.buscarAlojamientoPorNombre(alojamiento);
+				if (alojamiento_solicitado == null) {
+					System.out.println("Lo sentimos, no tenemos un alojamiento con ese nombre\n");
+					return -1;
+				}else if(!alojamiento_solicitado.getLocacion().equals(destino) ){
+					System.out.println("Lo sentimos, no tenemos un alojamiento con ese nombre en esa locacion\n");
+					return -1;
+		
+				}else {
+					System.out.println("Por favor ingrese el numero de dias que se va a quedar en el alojamiento");
+					int dias = sc.nextInt();
+					tiquete_solicitado.setAlojamiento(alojamiento_solicitado);
+					System.out.println("Perfecto! su alojamiento ha sido modificado a " + alojamiento_solicitado.getNombre()
+							+ " exitosamente.");
+					System.out.println();
+					return dias;
+				}
+			}
+		
+			/* CASE 5 MAIN: OPCIONES DE ADMINISTRADOR
+			 EN ESTE MENU PARA EL ADMINISTRADOR VAN A INTERACTUAR TODAS LAS CLASES PARA PERMITIR
+			 FUNCIONALIDADES ESPECIFICAS PARA CONTROLAR LOS VUELOS Y LOS ALOJAMIENTOS. */
+			static void opcionesAdministrador() {
+		
+				int opcion;
+				do {
+					System.out.println();
+					System.out.println("Que opcion desea realizar como administrador?");
+					System.out.println("1. Listar Pasajeros.");
+					System.out.println("2. Agregar Vuelo.");
+					System.out.println("3. Cancelar vuelo.");
+					System.out.println("4. Retirar un avion.");
+					System.out.println("5. Agregar Alojamiento.");
+					System.out.println("6. Eliminar Alojamiento.");
+					System.out.println("7. Agregar Aerolinea");
+					System.out.println("8. Eliminar Aerolinea.");
+					System.out.println("9. Agregar una aerolinea con vuelos");
+					System.out.println("10. Salir del administrador.");
+					System.out.println("Por favor escoja una opcion: ");
+		
+					opcion = sc.nextInt();
+		
+					switch (opcion) {
+						case 1:
+							listarPasajeros();
+							break;
+						case 2:
+							agregarNuevoVuelo();
+							break;
+						case 3:
+							cancelarVuelos();
+							break;
+						case 4:
+							retirarAvion();
+							break;
+						case 5:
+							nuevoAlojamiento();
+							break;
+						case 6:
+							retirarAlojamiento();
+							break;
+						case 7:
+							agregarAerolinea();
+							break;
+						case 8:
+							retirarAerolinea();
+							break;
+						case 9:
+							agregarAerolineaConVuelos();
+							break;
+						case 10:
