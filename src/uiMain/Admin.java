@@ -474,3 +474,119 @@ public class Admin {
 			int aeronave = sc.nextInt();
 	
 			if (aeronave == 1) {
+				System.out.println("Ingrese el nombre del avion:");
+			String nombreAvion = sc.next();
+			System.out.println();
+
+			Aeronave avion = new Avion(nombreAvion, Aerolinea.buscarAerolineaPorNombre(nombreAerolinea));
+			avion.asignarParamatrosSilla(avion, 1);
+			Vuelo vuelo = new Vuelo(iD, precio, origen, destino, avion, distancia, fechaSalida, horaSalida);
+			System.out.println("#######################################");
+			System.out.println("SU VUELO SE HA REGISTRADO CORRECTAMENTE");
+			System.out.println("#######################################\n");
+
+		} else if (aeronave == 2) {
+			System.out.println("INGRESE EL NOMBRE DE LA AVIONETA:");
+			String nombreAvioneta = sc.next();
+			System.out.println();
+			Aeronave avioneta = new Avioneta(nombreAvioneta, Aerolinea.buscarAerolineaPorNombre(nombreAerolinea));
+			avioneta.asignarParamatrosSilla(avioneta, 2);
+			Vuelo vuelo = new Vuelo(iD, precio, origen, destino, avioneta, distancia, fechaSalida, horaSalida);
+			System.out.println("#######################################");
+			System.out.println("SU VUELO SE HA REGISTRADO CORRECTAMENTE");
+			System.out.println("#######################################\n");
+		} else {
+			System.out.println("No manejamos ese tipo de aeronave");
+
+		}
+	}
+
+	/* CASE 3: ESTE CÓDIGO PERMITE AL USUARIO CANCELAR UN VUELO EXISTENTE. PRIMERO, MUESTRA UNA LISTA DE LOS VUELOS
+	DISPONIBLES AGRUPADOS POR AEROLÍNEAS. LUEGO, SE SOLICITA AL USUARIO EL NOMBRE DE UNA AEROLÍNEA Y EL ID DEL VUELO
+	QUE DESEA CANCELAR. SI SE ENCUENTRA UNA AEROLÍNEA Y UN VUELO CON EL ID PROPORCIONADO, EL VUELO SE CANCELA Y SE
+	MUESTRA UN MENSAJE DE CONFIRMACIÓN. SI NO SE ENCUENTRA EL VUELO O LA AEROLÍNEA, SE INFORMA AL USUARIO QUE NO
+	EXISTE NINGÚN VUELO O AEROLÍNEA CON ESE NOMBRE O ID. */
+	public static void cancelarVuelos() {
+		System.out.println("Estos son los vuelos que tenemos:\n");
+		ArrayList<Aerolinea> aerolineas = Aerolinea.getAerolineas();
+		generadorDeTablas.mostrarTablaDeVuelosPorAerolineas(aerolineas);
+		System.out.println("Ingrese el nombre de la aerolinea del vuelo a eliminar:");
+		String nombre = sc.next();
+		Aerolinea aero= Aerolinea.buscarAerolineaPorNombre(nombre);
+		if(aero!=null){
+		System.out.println("Ingrese el ID del vuelo a eliminar:");
+		int id = sc.nextInt();
+			if (aero.buscarVueloPorID(aero.getVuelos(), id) != null) {
+				aero.cancelarVuelo(id);
+				System.out.println("El vuelo se ha eliminado correctamente.");
+				return;
+			}
+			else{
+				System.out.println("No tenemos un vuelo identificado con ese ID \n");
+			}
+		}else{
+			System.out.println("No tenemos una aerolinea identificada con ese nombre \n");
+		}
+	}
+
+	/* CASE 4: ESTE CÓDIGO PERMITE AL USUARIO RETIRAR UNA AERONAVE DESCOMPUESTA DE UNA AEROLÍNEA Y CANCELAR EL VUELO
+	ASOCIADO A ELLA. PRIMERO, MUESTRA UNA LISTA DE AEROLÍNEAS Y SUS VUELOS ASOCIADOS, INCLUYENDO LOS NOMBRES DE LAS
+	AERONAVES. LUEGO, SE SOLICITA AL USUARIO INGRESAR EL NOMBRE DE LA AERONAVE QUE DESEA RETIRAR. SI SE ENCUENTRA
+	UNA AERONAVE CON EL NOMBRE INGRESADO, SE MARCA COMO "DESCOMPUESTA" Y SE CANCELA EL VUELO ASOCIADO. SI NO SE
+	ENCUENTRA UNA AERONAVE CON ESE NOMBRE, SE INFORMA AL USUARIO QUE NO SE PUDO ENCONTRAR LA AERONAVE. */
+	public static void retirarAvion() {
+		ArrayList<Aerolinea> aerolineasDisponibles = Aerolinea.getAerolineas();
+		for (int index = 0; index < aerolineasDisponibles.size(); index++) {
+			ArrayList<Vuelo> vuelos = aerolineasDisponibles.get(index).getVuelos();
+			System.out.println();
+			System.out.println(aerolineasDisponibles.get(index).getNombre().toUpperCase());
+			System.out.println();
+			for (int j = 0; j < aerolineasDisponibles.get(index).getVuelos().size(); j++) {
+				System.out.println(vuelos.get(j).getAeronave().getNombre());
+			}
+			System.out.println();
+		}
+		boolean aeronave_encontrada = false;
+		System.out.println("Ingrese el nombre de la Aeronave que se desea retirar:");
+		String nombre_aeronave = sc.next();
+		for (int i = 0; i < aerolineasDisponibles.size(); i++) {
+			Aerolinea aerolinea = aerolineasDisponibles.get(i);
+			Vuelo vuelo = aerolinea.buscarVueloPorAeronave(aerolinea.getVuelos(), nombre_aeronave);
+			if (vuelo != null) {
+				vuelo.getAeronave().setDescompuesto(true);
+				aerolinea.cancelarVuelo(vuelo.getID());
+				System.out.println("Se ha retirado la aeronave descompuesta y el vuelo asociado a este.");
+				System.out.println();
+				aeronave_encontrada = true;
+				break;
+			}
+		}
+		if (!aeronave_encontrada) {
+			System.out.println("Lo sentimos, no encontramos una aeronave asociada al nombre que ingreso.");
+			System.out.println();
+		}
+	}
+
+	/* CASE 5: ESTE CÓDIGO PERMITE AL USUARIO AGREGAR UN NUEVO ALOJAMIENTO A UNA LISTA. PRIMERO, SE SOLICITAN LOS DATOS
+	DEL ALOJAMIENTO, COMO EL NOMBRE, LA UBICACIÓN, EL PRECIO POR DÍA Y EL NÚMERO DE ESTRELLAS (DE 1 A 5). LUEGO, SE CREA
+	UN OBJETO ALOJAMIENTO CON LOS DATOS INGRESADOS Y SE MUESTRA UN MENSAJE DE CONFIRMACIÓN INFORMANDO QUE EL ALOJAMIENTO
+	SE HA AGREGADO CORRECTAMENTE A LA LISTA. */
+	public static void nuevoAlojamiento()
+	{
+		System.out.println("Ingrese el nombre del alojamiento que desea agregar a nuestra lista:");
+		String nombre = sc.next();
+		System.out.println();
+
+		System.out.println("Ingrese la locacion:");
+		String locacion = sc.next();
+		System.out.println();
+
+		System.out.println("Ingrese el precio por dia:");
+		long precio = sc.nextLong();
+		System.out.println();
+
+		System.out.println("Ingrese el numero de estrellas (1-5):");
+		int estrellas = sc.nextInt();
+		System.out.println();
+
+		Alojamiento nuevoAlojamiento = new Alojamiento(nombre, locacion, precio, estrellas);
