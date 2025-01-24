@@ -826,3 +826,120 @@ public class Admin {
 				hayVuelos = true;
 			}
 		}
+		if (hayVuelos == false)
+		{
+		System.out.println();
+		System.out.println("Lo sentimos, no tenemos vuelos disponibles para ese destino");
+		}
+		return hayVuelos;
+	}
+
+	/* OPCION 2: CONSULTAR VUELO POR DESTINO Y FECHA
+
+	ESTE METODO RECIBE COMO PARAMETRO UN DESTINO (STRING) Y UNA FECHA (STRING) Y RECORRE CADA AEROLINEA EJECUTANDO EL METODO DE AEROLINEA
+	buscarVueloPorDestino() SI LOS ENCUENTRA, EJECUTA EL METODO DE AEROLINEA buscarVueloPorFecha() PARA ALMACENAR ESTOS VUELOS EN UNA LISTA
+	Y MOSTRARLOS POR PANTALLA CON generadorDeTablas.mostrarTablaDeVuelos(). SI ENCONTRO AL MENOS UN VUELO EN ALGUNA AEROLINEA QUE TUVIERA
+	ASOCIADO ESE DESTINO Y ESA FECHA, RETORNA LA VARIABLE boolean HAYVUELOS CON EL VALOR true, DE LO CONTRARIO RETORNA false. */
+	static boolean consultarVuelosPorDestinoYFecha(String destino, String fecha)
+	{
+		boolean hayVuelos = false;
+
+		ArrayList<Aerolinea> aerolineasDisponibles = Aerolinea.getAerolineas();
+		int c=0;
+		for (int i = 0; i < aerolineasDisponibles.size(); i++)
+		{
+			Aerolinea aerolinea = aerolineasDisponibles.get(i);
+			ArrayList<Vuelo> vuelosPorDestino = aerolinea.buscarVueloPorDestino(aerolinea.vuelosDisponibles(aerolinea.getVuelos()), destino);
+			if (vuelosPorDestino.size() != 0)
+			{
+				ArrayList<Vuelo> vuelosPorFecha = aerolinea.buscarVueloPorFecha(vuelosPorDestino, fecha);
+				if(vuelosPorFecha.size() != 0 ){
+					if (c==0) {
+						System.out.println();
+						System.out.println("Estos son los vuelos disponibles hacia " + destino + " en la fecha " + fecha + " por nuestras aerolineas:" );
+						c+=1;
+					}
+					generadorDeTablas.mostrarTablaDeVuelos(aerolinea, vuelosPorFecha);
+					hayVuelos = true;
+				}
+			}
+		}
+		if (hayVuelos == false) {
+			System.out.println();
+			System.out.println("Lo sentimos, no tenemos vuelos disponibles para ese destino y fecha especificos");
+		}
+		return hayVuelos;
+	}
+
+/* METODOS AUXILIARES - TABLA ALOJAMIENTOS
+
+	ESTE METODO RECIBE COMO PARAMETRO UNA UBICACION (STRING) Y SE ENCARGA DE BUSCAR LOS ALOJAMIENTOS QUE TIENEN ASOCIADA ESTA UBICACION
+	PARA POSTERIORMENTE MOSTRARLOS EN UNA TABLA POR PANTALLA CON generadorDeTablas.mostrarTablaDeAlojamientos(). SI ENCONTRO AL MENOS UN
+	ALOJAMIENTO QUE TUVIERA ESA UBICACION, RETORNA LA VARIABLE boolean HAYVUELOS CON EL VALOR true, DE LO CONTRARIO RETORNA false. */
+	static boolean mostrarAlojamientosPorUbicacion(String ubicacion)
+	{
+		System.out.println("Estos son los alojamientos disponibles en " + ubicacion + ":" );
+		boolean hayAlojamientos = false;
+		ArrayList<Alojamiento> alojamientosDisponibles = Alojamiento.buscarAlojamientoPorUbicacion(ubicacion);
+		if (alojamientosDisponibles.size() != 0) {
+			hayAlojamientos = true;
+			generadorDeTablas.mostrarTablaDeAlojamientos(alojamientosDisponibles);
+		}else {
+			System.out.println("Lo sentimos, no tenemos alojamientos disponibles para ese destino");
+			System.out.println();
+		}
+		return hayAlojamientos;
+	}
+
+	/* METODOS AUXILIARES - ELEGIR SILLA
+
+		ESTE METODO RECIBE UN VUELO, ESTE LO UTILIZARA PARA ACCEDER A LAS SILLAS DEL AVION QUE REALIZARA EL VUELO.
+		LUEGO SOLICITA QUE TIPO DE SILLA Y UBICACION PREFIERE, VALORES LOS CUALES USARA PARA BUSCAR DENTRO DEL AVION SI SE
+		ENCUENTRA UNA SILLA DISPONIBLE CON ESAS CARACTERISTICAS	Y ASIGANARLA AL ATRIBUTO SILLA DE TIQUETE. */
+		static Silla elegirSilla(Vuelo vuelo)
+		{
+			System.out.println("1: Ejecutiva");
+			System.out.println("2: Economica");
+
+			int nombre_clase = sc.nextInt();
+			int num_ubicacion;
+			String clase;
+			while(nombre_clase != 1 & nombre_clase!=2) {
+				System.out.println("Porfavor ingrese una opcion valida");
+				nombre_clase = sc.nextInt();
+			}
+
+			System.out.println("Cual de las siguientes ubicaciones prefiere?");
+			System.out.println("1: Pasillo");
+			System.out.println("2: Ventana");
+
+			if(nombre_clase == 2)  {
+				clase = "ECONOMICA";
+				System.out.println("3: Central");
+				num_ubicacion  = sc.nextInt();
+				while(num_ubicacion!=1 & num_ubicacion!=2 & num_ubicacion!=3) {
+					System.out.println("Porfavor ingrese una opcion valida");
+					num_ubicacion = sc.nextInt();
+				}
+			}
+			else {clase = "EJECUTIVA";
+				num_ubicacion  = sc.nextInt();
+				while(num_ubicacion!=1 & num_ubicacion!=2) {
+					System.out.println("Porfavor ingrese una opcion valida");
+					num_ubicacion = sc.nextInt();
+				}
+			}
+
+			Ubicacion ubicacion;
+			if(num_ubicacion == 1) {
+				ubicacion = Ubicacion.PASILLO;
+			}
+			else if (num_ubicacion == 2) {
+				ubicacion = Ubicacion.VENTANA;
+			}
+			else {ubicacion = Ubicacion.CENTRAL;
+			}
+
+			return vuelo.getAeronave().buscarSillaPorUbicacionyTipo(ubicacion,clase );
+		}
+}
