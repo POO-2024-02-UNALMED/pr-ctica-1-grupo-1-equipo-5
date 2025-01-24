@@ -707,3 +707,122 @@ public class Admin {
 				if(vu.getID()==iD){
 					conta+=1;
 				}
+			}
+			if(conta==0){
+				esta=false;
+			}else{
+				System.out.println("Este ID ya se encuentra registrado en un vuelo de esta aerolinea.");
+				System.out.println("Ingrese otro ID por favor:");
+				iD = sc.nextInt();
+			}
+		}
+		System.out.println("\nIngrese el precio:");
+		int precio = sc.nextInt();
+		System.out.println();
+
+		System.out.println("Ingrese el origen:");
+		String origen = sc.next();
+		System.out.println();
+
+		System.out.println("Ingrese el destino:");
+		String destino = sc.next();
+		System.out.println();
+
+		System.out.println("Ingrese la distancia (KM):");
+		double distancia = sc.nextDouble();
+		System.out.println();
+
+		System.out.println("Ingrese fecha de salida (DD-MM-AAAA):");
+		String fechaSalida = sc.next();
+		System.out.println();
+
+		System.out.println("Ingrese hora de salida (24:00):");
+		String horaSalida = sc.next();
+		System.out.println();
+
+		System.out.println("Que tipo de aeronave es?");
+		System.out.println("Ingrese 1 para avion" + "\n" + "Ingrese 2 para avioneta");
+		int aeronave = sc.nextInt();
+
+		if (aeronave == 1) {
+			System.out.println("Ingrese el nombre del avion:");
+			String nombreAvion = sc.next();
+			System.out.println();
+
+			Aeronave avion = new Avion(nombreAvion);
+			avion.asignarParamatrosSilla(avion, 1);
+			Vuelo vuelo = new Vuelo(iD, precio, origen, destino, avion, distancia, fechaSalida);
+			vuelo.setHora_de_salida(horaSalida);
+			vuelos.add(vuelo);
+			System.out.println("#######################################");
+			System.out.println("SU VUELO SE HA REGISTRADO CORRECTAMENTE");
+			System.out.println("#######################################\n");
+
+		} else if (aeronave == 2) {
+			System.out.println("INGRESE EL NOMBRE DE LA AVIONETA:");
+			String nombreAvioneta = sc.next();
+			System.out.println();
+			Aeronave avioneta = new Avioneta(nombreAvioneta);
+			avioneta.asignarParamatrosSilla(avioneta, 2);
+			Vuelo vuelo = new Vuelo(iD, precio, origen, destino, avioneta, distancia, fechaSalida);
+			vuelo.setHora_de_salida(horaSalida);
+			vuelos.add(vuelo);
+			System.out.println("#######################################");
+			System.out.println("SU VUELO SE HA REGISTRADO CORRECTAMENTE");
+			System.out.println("#######################################\n");
+		} else {
+			System.out.println("No manejamos ese tipo de aeronave");
+
+		}System.out.println("Desea agregar otro vuelo a esta aerolinea:");
+		System.out.println("1. Si.");
+		System.out.println("2. No.");
+		opcio=sc.nextInt();
+		}while(opcio!=2);
+		nueva_Aerolinea=new Aerolinea(nombre, vuelos);
+		for(Vuelo j:nueva_Aerolinea.getVuelos()){
+			j.getAeronave().setAerolinea(nueva_Aerolinea);
+		}
+	}
+
+	/* CASE 10: ESTE CÓDIGO MUESTRA UN MENSAJE DE DESPEDIDA CUANDO EL USUARIO DECIDE SALIR DE LAS OPCIONES DEL ADMINISTRADOR.
+	SIMPLE Y DIRECTO, SE INFORMA AL USUARIO QUE SE HA FINALIZADO SU SESIÓN COMO ADMINISTRADOR. */
+	private static void salirDelAdministrador() {
+		System.out.println("Gracias por usar nuestras opciones de administrador! \n");
+	}
+
+	/* CASE 6 MAIN: ESTE CÓDIGO MUESTRA UN MENSAJE DE DESPEDIDA AL USUARIO Y GUARDA EL ESTADO DEL SISTEMA MEDIANTE UN MÉTODO DE
+	SERIALIZACIÓN ANTES DE CERRAR EL PROGRAMA. SE LLAMA AL MÉTODO `Serializador.serializar()` PARA GUARDAR LOS DATOS Y LUEGO
+	SE UTILIZA `System.exit(0)` PARA TERMINAR LA EJECUCIÓN DEL PROGRAMA DE MANERA CORRECTA. */
+	private static void salirDelSistema() {
+		System.out.println("Gracias por usar nuestro servicio!");
+		Serializador.serializar();
+		System.exit(0);
+	}
+
+/* METODOS AUXILIARES
+
+	OPCION 1: CONSULTAR VUELO POR DESTINO
+	ESTE METODO RECIBE COMO PARAMETRO UN DESTINO (STRING) Y RECORRE CADA AEROLINEA EJECUTANDO EL METODO DE AEROLINEA
+	buscarVueloPorDestino() PARA ALMACENAR ESTOS VUELOS EN UNA LISTA Y MOSTRARLOS POR PANTALLA CON
+	generadorDeTablas.mostrarTablaDeVuelos(). SI ENCONTRO AL MENOS UN VUELO EN ALGUNA AEROLINEA QUE TUVIERA ASOCIADO
+	ESTE DESTINO RETORNA LA VARIABLE boolean HAYVUELOS CON EL VALOR true, DE LO CONTRARIO RETORNA false. */
+	static boolean consultarVuelosPorDestino(String destino)
+	{
+		int c=0;
+		boolean hayVuelos = false;
+
+		ArrayList<Aerolinea> aerolineasDisponibles = Aerolinea.getAerolineas();
+		for (int i = 0; i < aerolineasDisponibles.size(); i++)
+		{
+			Aerolinea aerolinea = aerolineasDisponibles.get(i);
+			ArrayList<Vuelo> vuelosPorDestino = aerolinea.buscarVueloPorDestino(aerolinea.vuelosDisponibles(aerolinea.getVuelos()), destino);
+			if (vuelosPorDestino.size() != 0)
+			{if (c==0) {
+				System.out.println();
+				System.out.println("Estos son los vuelos disponibles hacia " + destino + " por nuestras aerolineas:" );
+				c+=1;
+			}
+				generadorDeTablas.mostrarTablaDeVuelos(aerolinea, vuelosPorDestino);
+				hayVuelos = true;
+			}
+		}
