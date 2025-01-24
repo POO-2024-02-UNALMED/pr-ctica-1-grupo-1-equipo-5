@@ -590,3 +590,120 @@ public class Admin {
 		System.out.println();
 
 		Alojamiento nuevoAlojamiento = new Alojamiento(nombre, locacion, precio, estrellas);
+		System.out.println("Perfecto! El alojamiento " + nuevoAlojamiento.getNombre() + " se ha agregado a nuestra lista.");
+		}
+
+	/* CASE 6: ESTE CÓDIGO PERMITE AL USUARIO RETIRAR UN ALOJAMIENTO DE UNA LISTA. PRIMERO, MUESTRA UNA TABLA CON LOS
+	ALOJAMIENTOS DISPONIBLES Y LUEGO SOLICITA AL USUARIO EL NOMBRE DEL ALOJAMIENTO QUE DESEA RETIRAR. SI EL ALOJAMIENTO
+	EXISTE EN LA LISTA, SE ELIMINA Y SE MUESTRA UN MENSAJE DE CONFIRMACIÓN. SI NO SE ENCUENTRA EL ALOJAMIENTO CON EL
+	NOMBRE INGRESADO, SE INFORMA AL USUARIO QUE NO EXISTE UN ALOJAMIENTO CON ESE NOMBRE. */
+	public static void retirarAlojamiento()
+	{
+		System.out.println("Estos son los alojamientos que tenemos asociados:");
+		generadorDeTablas.mostrarTablaDeAlojamientos(Alojamiento.getAlojamientos());
+
+		System.out.println("Ingrese el nombre del alojamiento que desea retirar de nuestra lista:");
+		String nombre = sc.next();
+
+		if (Alojamiento.buscarAlojamientoPorNombre(nombre) != null)
+		{
+			for (int i = 0; i < Alojamiento.getAlojamientos().size(); i++ )
+			{
+				if (Alojamiento.getAlojamientos().get(i).getNombre().equalsIgnoreCase(nombre))
+				{
+					Alojamiento.getAlojamientos().remove(i);
+					System.out.println("El alojamiento " + nombre + " se ha eliminado correctamente.");
+					System.out.println();
+				}
+			}
+		}
+		else
+		{
+			System.out.println("Lo sentimos, no tenemos un alojamiento con este nombre.");
+			System.out.println();
+		}
+	}
+
+	/* CASE 7: ESTE CÓDIGO PERMITE AL USUARIO AGREGAR UNA NUEVA AEROLÍNEA. PRIMERO, SE SOLICITA AL USUARIO EL NOMBRE
+	DE LA AEROLÍNEA QUE DESEA AGREGAR Y SE VERIFICA SI YA EXISTE UNA AEROLÍNEA CON ESE NOMBRE. SI YA EXISTE, SE INFORMA
+	AL USUARIO; DE LO CONTRARIO, SE CREA UNA NUEVA AEROLÍNEA. A CONTINUACIÓN, SE LE PREGUNTA AL USUARIO SI DESEA
+	AGREGAR VUELOS A ESA AEROLÍNEA. SI ELIGE "SÍ", SE LLAMA AL MÉTODO agregarNuevoVuelo PARA AGREGAR VUELOS A LA NUEVA
+	AEROLÍNEA. ESTE PROCESO SE REPITE HASTA QUE EL USUARIO ELIGA "NO". */
+	private static void agregarAerolinea(){
+		System.out.println("AGREGAR NUEVA AEROLINEA \n");
+		System.out.println("Ingrese el nombre de la aerolinea que desea agregar:");
+		String nombre = sc.next();
+		Aerolinea i= Aerolinea.buscarAerolineaPorNombre(nombre);
+		if (i!=null) {
+			System.out.println("Ya existe una aerolinea con ese nombre.");
+		}else{
+			Aerolinea nuevAerolinea= new Aerolinea(nombre);
+			int opcion;
+			do {
+				System.out.println("Desea agregar vuelos a alguna aerolinea:");
+				System.out.println("1. SI");
+				System.out.println("2. NO");
+				opcion= sc.nextInt();
+				if (opcion==1){
+					agregarNuevoVuelo();
+				}
+			}while(opcion!=2);
+		}
+	}
+
+	/* CASE 8: ESTE CÓDIGO PERMITE AL USUARIO RETIRAR UNA AEROLÍNEA DE LA LISTA. PRIMERO, SE MUESTRA UNA TABLA CON LAS AEROLÍNEAS
+	DISPONIBLES Y SE SOLICITA AL USUARIO EL NOMBRE DE LA AEROLÍNEA QUE DESEA ELIMINAR. SI SE ENCUENTRA UNA AEROLÍNEA CON ESE NOMBRE,
+	SE ELIMINA DE LA LISTA Y SE MUESTRA UN MENSAJE DE CONFIRMACIÓN. SI NO SE ENCUENTRA UNA AEROLÍNEA CON EL NOMBRE INGRESADO,
+	SE INFORMA AL USUARIO QUE NO EXISTE UNA AEROLÍNEA CON ESE NOMBRE. */
+	private static void retirarAerolinea(){
+		generadorDeTablas.mostrarTablaDeAerolineas(Aerolinea.getAerolineas());
+		System.out.println("RETIRAR UNA AEROLINEA \n");
+		System.out.println("Ingrese el nombre de la aerolinea que desea retirar:");
+		String nombre = sc.next();
+		Aerolinea i= Aerolinea.buscarAerolineaPorNombre(nombre);
+		if (i!=null) {
+			for(int j = 0; j < Aerolinea.getAerolineas().size(); j++){
+				if(Aerolinea.getAerolineas().get(j).getNombre()==i.getNombre()){
+					Aerolinea.getAerolineas().remove(j);
+				}
+			}
+			System.out.println("Se ha eliminado correctamente la aerolinea " +nombre);
+
+		}else{
+			System.out.println("No tenemos una aerolinea con este nombre.");
+		}
+	}
+
+	/* CASE 9: ESTE CÓDIGO PERMITE AL USUARIO AGREGAR UNA NUEVA AEROLÍNEA JUNTO CON SUS VUELOS ASOCIADOS. PRIMERO,
+	SE SOLICITA EL NOMBRE DE LA AEROLÍNEA Y SE VERIFICA QUE NO EXISTAN AEROLÍNEAS CON ESE NOMBRE. LUEGO, SE SOLICITAN
+	LOS DATOS DE AL MENOS UN VUELO (ID, PRECIO, ORIGEN, DESTINO, DISTANCIA, FECHA Y HORA DE SALIDA). SE PIDE AL USUARIO
+	QUE ESPECIFIQUE EL TIPO DE AERONAVE (AVIÓN O AVIONETA) Y SE CREA EL VUELO CORRESPONDIENTE. SI EL USUARIO DESEA
+	AGREGAR MÁS VUELOS, EL PROCESO SE REPITE HASTA QUE EL USUARIO ELIGA NO AGREGAR MÁS. AL FINAL, SE CREA UNA NUEVA
+	AEROLÍNEA CON LOS VUELOS INGRESADOS Y SE ASOCIA CADA VUELO CON SU AERONAVE Y AEROLÍNEA. SE MUESTRAN MENSAJES DE
+	CONFIRMACIÓN A LO LARGO DEL PROCESO.*/
+	private static void agregarAerolineaConVuelos(){
+		ArrayList<Vuelo> vuelos=new ArrayList<Vuelo>();
+		System.out.println("Por favor ingrese el nombre de la nueva aerolinea");
+		String nombre = sc.next();
+		Aerolinea nueva_Aerolinea= Aerolinea.buscarAerolineaPorNombre(nombre);
+		while (nueva_Aerolinea !=null) {
+			System.out.println("La Aerolinea ya existe por favor ingrese otro nombre");
+			nombre=sc.next();
+			nueva_Aerolinea=Aerolinea.buscarAerolineaPorNombre(nombre);
+		}
+		System.out.println("La Aerolinea debe tener por lo menos un vuelo");
+		System.out.println();
+		int opcio;
+		do{System.out.println("Ingrese el ID del nuevo vuelo (3 cifras):");
+		int iD = sc.nextInt();
+		while (Integer.toString(iD).length() != 3) {
+			System.out.println("Por favor ingrese un ID de 3 cifras.");
+			iD = sc.nextInt();
+		}
+		Boolean esta=true;
+		while (esta) {
+			int conta=0;
+			for(Vuelo vu: vuelos){
+				if(vu.getID()==iD){
+					conta+=1;
+				}
