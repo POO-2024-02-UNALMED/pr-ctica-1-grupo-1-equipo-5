@@ -356,3 +356,121 @@ public class Admin {
 							agregarAerolineaConVuelos();
 							break;
 						case 10:
+						salirDelAdministrador();
+						break;
+				}
+			} while (opcion != 10);
+		}
+	
+		// METODOS DE LAS OPCIONES DE ADMINISTRADOR
+	
+		/* CASE 1: ESTE CÓDIGO PERMITE AL USUARIO LISTAR LOS PASAJEROS DE UN VUELO DE UNA AEROLÍNEA ESPECÍFICA. PRIMERO,
+		 MUESTRA TODAS LAS AEROLÍNEAS DISPONIBLES Y SOLICITA AL USUARIO QUE INGRESE EL NOMBRE DE UNA AEROLÍNEA. LUEGO,
+		 PIDE UN ID DE VUELO Y MUESTRA LA LISTA DE PASAJEROS ASOCIADOS A ESE VUELO. SI NO SE ENCUENTRAN PASAJEROS O EL VUELO
+		 NO EXISTE, INFORMA AL USUARIO Y LE PERMITE INTENTARLO DE NUEVO. EL PROCESO SE REPITE HASTA QUE EL USUARIO INGRESE
+		 UNA AEROLÍNEA Y UN VUELO VÁLIDOS. */
+		private static void listarPasajeros() {
+			ArrayList<Aerolinea> aerolineas = Aerolinea.getAerolineas();
+			generadorDeTablas.mostrarTablaDeVuelosPorAerolineas(aerolineas);
+			Aerolinea ae=null;
+			do {
+				System.out.println();
+				System.out.println("Ingrese el nombre de la aerolinea: ");
+				ae=Aerolinea.buscarAerolineaPorNombre(sc.next());
+				System.out.println();
+				if(ae!=null){
+					ArrayList<Tiquete> tiquetes = new ArrayList<Tiquete>();
+					Vuelo vuelo = null;
+					int IDBusqueda = 0;
+					do {
+						System.out.println("Ingrese el ID del vuelo: ");
+						IDBusqueda = sc.nextInt();
+						System.out.println();
+						vuelo = ae.buscarVueloPorID(ae.getVuelos(), IDBusqueda);
+						if (vuelo == null) {
+							System.out.println("No tenemos vuelos con ese ID.\n");
+						}
+					} while (vuelo==null);
+	
+					tiquetes = vuelo.getTiquetes();
+					System.out.println("LISTA DE PASAJEROS PARA EL VUELO " + IDBusqueda);
+	
+					if (tiquetes.size() == 0) {
+						System.out.println("El vuelo aun no tiene pasajeros asociados \n");
+						System.out.println();
+					} else {
+						generadorDeTablas.mostrarTablaDePasajeros(tiquetes);
+					}
+					}
+				else{
+					System.out.println("No tenemos una aerolinea con ese nombre.");
+				}
+			} while (ae==null);
+			}
+	
+		/* CASE 2: ESTE CÓDIGO PERMITE AL USUARIO AGREGAR UN NUEVO VUELO A UNA AEROLÍNEA EXISTENTE. PRIMERO, SE MUESTRA
+		UNA LISTA DE AEROLÍNEAS DISPONIBLES Y SE SOLICITA AL USUARIO INGRESAR EL NOMBRE DE UNA AEROLÍNEA.
+		SI LA AEROLÍNEA NO EXISTE, EL PROCESO SE REPITE HASTA QUE SE INGRESE UNA AEROLÍNEA VÁLIDA. LUEGO, SE SOLICITA UN ID
+		DE VUELO DE 3 CIFRAS Y SE VALIDA QUE NO ESTÉ EN USO Y QUE TENGA LA LONGITUD CORRECTA. A CONTINUACIÓN, SE SOLICITAN
+		VARIOS DATOS DEL VUELO, COMO EL PRECIO, ORIGEN, DESTINO, DISTANCIA, FECHA Y HORA DE SALIDA. EL USUARIO TAMBIÉN DEBE
+		SELECCIONAR EL TIPO DE AERONAVE (AVIÓN O AVIONETA) Y SE CREA EL OBJETO CORRESPONDIENTE. FINALMENTE, SE REGISTRA EL
+		VUELO Y SE MUESTRA UN MENSAJE DE CONFIRMACIÓN. SI EL USUARIO INGRESA UN TIPO DE AERONAVE NO VÁLIDO, SE INFORMA QUE
+		NO SE MANEJA ESE TIPO DE AERONAVE.*/
+		private static void agregarNuevoVuelo() {
+			ArrayList<Aerolinea> aerolineas = Aerolinea.getAerolineas();
+			System.out.println("AGREGAR NUEVO VUELO \n");
+			generadorDeTablas.mostrarTablaDeAerolineas(aerolineas);
+			System.out.println("Ingrese el nombre de la aerolinea para agregar vuelo\n");
+			String nombreAerolinea = sc.next();
+	
+			Aerolinea aerolinea_busqueda = Aerolinea.buscarAerolineaPorNombre(nombreAerolinea);
+	
+			while (aerolinea_busqueda == null) {
+				System.out.println("\nESA AEROLINEA NO EXISTE");
+				generadorDeTablas.mostrarTablaDeAerolineas(aerolineas);
+				System.out.println("Ingrese un nombre del listado anterior\n");
+				String nombreAerolinean = sc.next();
+				aerolinea_busqueda = Aerolinea.buscarAerolineaPorNombre(nombreAerolinean);
+			}
+			System.out.println();
+	
+			System.out.println("Ingrese el ID del nuevo vuelo (3 cifras):");
+			int iD = sc.nextInt();
+			while (Integer.toString(iD).length() != 3) {
+				System.out.println("Por favor ingrese un ID de 3 cifras.");
+				iD = sc.nextInt();
+			}
+			while (aerolinea_busqueda.buscarVueloPorID(aerolinea_busqueda.getVuelos(), iD) != null) {
+				System.out.println("El ID que ingreso ya esta en uso, por favor ingrese uno distinto.");
+				iD = sc.nextInt();
+			}
+	
+			System.out.println("\nIngrese el precio:");
+			int precio = sc.nextInt();
+			System.out.println();
+	
+			System.out.println("Ingrese el origen:");
+			String origen = sc.next();
+			System.out.println();
+	
+			System.out.println("Ingrese el destino:");
+			String destino = sc.next();
+			System.out.println();
+	
+			System.out.println("Ingrese la distancia (KM):");
+			double distancia = sc.nextDouble();
+			System.out.println();
+	
+			System.out.println("Ingrese fecha de salida (DD-MM-AAAA):");
+			String fechaSalida = sc.next();
+			System.out.println();
+	
+			System.out.println("Ingrese hora de salida (24:00):");
+			String horaSalida = sc.next();
+			System.out.println();
+	
+			System.out.println("Que tipo de aeronave es?");
+			System.out.println("Ingrese 1 para avion" + "\n" + "Ingrese 2 para avioneta");
+			int aeronave = sc.nextInt();
+	
+			if (aeronave == 1) {
