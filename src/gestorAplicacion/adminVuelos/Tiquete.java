@@ -20,6 +20,7 @@ public class Tiquete implements Serializable {
 	private Silla silla;
 	private Pasajero pasajero;
 	private Alojamiento alojamiento;
+	private int numDias;
 
 	//CONSTRUCTORES.
 	public Tiquete(int id, int precio, Vuelo vuelo) {
@@ -157,5 +158,11 @@ public class Tiquete implements Serializable {
 	}
 	public void setAlojamiento(Alojamiento alojamiento) {
 		this.alojamiento = alojamiento;
+	}
+	public int getnumDias() {
+		return numDias;
+	}
+	public void setnumDias(int num) {
+		numDias = num;
 	}
 }

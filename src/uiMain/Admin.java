@@ -265,9 +265,13 @@ public class Admin {
 				System.out.println("#####################################");
 				System.out.println("SU SILLA HA SIDO MODIFICADA CON EXITO");
 				System.out.println("#####################################\n");
-				tiquete.asignarPrecio();
+				if(tiquete.getAlojamiento()==null){
+					tiquete.asignarPrecio();
+				}else{
+					tiquete.asignarPrecio(tiquete.getnumDias());
+				}
 				System.out.println(tiquete);
-		
+				
 			}
 		
 			/* ESTE METODO RECIBE UN TIQUETE AL CUAL SE LE VA A MODIFICAR EL ATRIBUTO ALOJAMIENTO (DEBE DE TENER UNO YA ASIGANDO
